@@ -692,40 +692,18 @@ theorem nthRoots_one_eq_biUnion_primitiveRoots [DecidableEq R] {n : ℕ} :
 /-- Equivalence of coprime powers of primitive roots. -/
 def equiv_primitiveRoots_of_coprimePow {e r : ℕ} [CommRing R] [IsDomain R] [NeZero r]
   (h : e.Coprime r) : (primitiveRoots r R) ≃ (primitiveRoots r R) := by
-  have coprmGcdA (x y :ℤ) (h: IsCoprime x y ) : IsCoprime (x.gcdA y) y := by
-    rw [IsCoprime]
-    rw [IsCoprime] at h
-    have ⟨a, b, hh⟩ :=h
-    have g := Int.gcd_eq_gcd_ab x y
-    have gg : ↑(x.gcd y) = 1 :=by exact Int.isCoprime_iff_gcd_eq_one.mp h
-    rw [gg] at g
-    use x
-    use x.gcdB y
-    nth_rw 2 [mul_comm]
-    exact g.symm
-  have de : 0 ≤ ( r * ( Nat.gcdA e r ) + 1 ) * ( Nat.gcdA e r ) := by
-    have cas : 0 ≤ e.gcdA r ∨ e.gcdA r < 0 :=by exact le_or_gt 0 ( e.gcdA r )
-    have ger : 0 ≤ (r:ℤ):=by exact Int.natCast_nonneg r
-    cases cas with
+  have coprmGcdA (x y : ℤ) (hc : IsCoprime x y) : IsCoprime (x.gcdA y) y := by
+    use x, x.gcdB y
+    rwa [mul_comm _ y, ← Int.gcd_eq_gcd_ab, Nat.cast_eq_one, ← Int.isCoprime_iff_gcd_eq_one]
+  have de : 0 ≤ (r * Nat.gcdA e r + 1) * Nat.gcdA e r := by
+    cases le_or_gt 0 (e.gcdA r) with
     | inl hc =>
-      refine Int.mul_nonneg ?_ hc
-      refine Int.add_nonneg ?_ ?_
-      exact Int.mul_nonneg ger hc
       positivity
     | inr hc =>
-      rw [right_distrib]
-      simp only [one_mul, ge_iff_le]
-      have jj: ( r : ℤ ) * e.gcdA r *e.gcdA r +e.gcdA r =  e.gcdA r * ( r * e.gcdA r + 1 ):=by ring
-      rw [jj]
-      refine Int.mul_nonneg_iff.mpr ?_
-      right
-      constructor
-      exact Int.le_of_lt hc
-      have quest : 1 ≤ - ( e.gcdA r ) := by exact Int.add_le_zero_iff_le_neg'.mp hc
-      refine Int.add_le_zero_iff_le_neg'.mpr ?_
-      rw [neg_mul_eq_mul_neg]
-      have nez : 1 ≤ (r:ℤ) := ( Int.toNat_le.mp NeZero.one_le )
-      exact one_le_mul_of_one_le_of_one_le nez quest
+      have hr : (0 : ℤ) < r := by exact_mod_cast r.pos_of_neZero
+      apply Int.mul_nonneg_of_nonpos_of_nonpos _ (Int.le_of_lt hc)
+      rw [Int.add_le_zero_iff_le_neg', Int.neg_mul_eq_mul_neg]
+      exact one_le_mul_of_one_le_of_one_le hr (Int.neg_pos_of_neg hc)
   have hea (a : R) (ha: a ∈ primitiveRoots r R):
    a ^ (e * ((r * e.gcdA r + 1) * e.gcdA r).toNat) = a :=by
     rw [mem_primitiveRoots] at ha
