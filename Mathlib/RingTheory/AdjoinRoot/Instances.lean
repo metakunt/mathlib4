@@ -99,6 +99,7 @@ lemma X_pow_sub_one_of_regular (h : IsRegular (r : R)) : (span {(X : R[X]) ^ r -
       simpa using this
 
 end IsRadical
+
 namespace AdjoinRoot
 
 variable [CommRing R] {f : R[X]}
@@ -128,5 +129,9 @@ lemma charP_of_X_pow_sub_one (h : 0 < r) [Nontrivial R] :
     CharP (AdjoinRoot (X ^ r - 1 : R[X])) n := by
   rw [← C_1]
   exact charP_of_X_pow_sub_C h
+
+instance [Nontrivial R] [NeZero r] : CharP (AdjoinRoot (X ^ r - 1 : R[X])) n :=
+  have : r ≠ 0 := NeZero.out
+  charP_of_X_pow_sub_one (by lia)
 
 end AdjoinRoot
