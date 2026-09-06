@@ -56,7 +56,7 @@ lemma _root_.Polynomial.Monic.dvd_of_forall_prime_map_dvd (hf : f.Monic) (H : �
     have hz : (g %ₘ f).map (Ideal.Quotient.mk P) = 0 := by
       rw [map_modByMonic _ hf, modByMonic_eq_zero_iff_dvd (hf.map _)]
       exact H ⟨P, hP⟩
-    have hc := (congrArg (fun p => Polynomial.coeff p i) hz)
+    have hc := (congrArg (coeff · i) hz)
     simp only [coeff_map, coeff_zero] at hc
     grind [Ideal.Quotient.eq_zero_iff_mem]
 
@@ -87,7 +87,7 @@ lemma span_X_pow_sub_one_of_regular (h : IsRegular (r : R)) :
   · exact X_pow_zero_sub_one_of_zero_eq_one (h.left (by simp)).symm
   · set S := (Localization.Away (r : R))
     intro k y hy
-    refine (Polynomial.map_dvd_map (algebraMap R S) ?_ ?_).mp ?_
+    refine (map_dvd_map (algebraMap R S) ?_ ?_).mp ?_
     · apply IsLocalization.injective (M := Submonoid.powers (r : R))
       rintro x ⟨m, rfl⟩
       exact pow_mem h.mem_nonZeroDivisors m
@@ -121,7 +121,7 @@ lemma charP_of_monic_of_degree_pos (monic : f.Monic) (deg : 0 < f.degree) :
 
 lemma charP_of_X_pow_sub_C {a : R} (h : 0 < r) [Nontrivial R] :
     CharP (AdjoinRoot ((X : R[X]) ^ r - C a)) n := by
-  have monic := Polynomial.monic_X_pow_sub_C (a : R) h.ne.symm
+  have monic := monic_X_pow_sub_C (a : R) h.ne.symm
   apply charP_of_monic_of_degree_pos monic
   apply natDegree_pos_iff_degree_pos.mp
   grind [natDegree_X_pow_sub_C]
