@@ -44,7 +44,7 @@ variable [IsReduced R]
 
 /-- A monic polynomial `f` over a reduced ring divides `g` as soon as it does so modulo every
     prime ideal. -/
-lemma _root_.Polynomial.Monic.dvd_of_forall_prime_map_dvd (hf : f.Monic) (H : ∀ P : PrimeSpectrum R,
+lemma _root_.Polynomial.Monic.dvd_of_forall_prime_map_dvd (hf : f.Monic) (h : ∀ P : PrimeSpectrum R,
     f.map (Ideal.Quotient.mk P.asIdeal) ∣ g.map (Ideal.Quotient.mk P.asIdeal)) : f ∣ g := by
   rw [← modByMonic_eq_zero_iff_dvd hf]
   ext i
@@ -52,10 +52,10 @@ lemma _root_.Polynomial.Monic.dvd_of_forall_prime_map_dvd (hf : f.Monic) (H : �
   · infer_instance
   · rw [nilradical_eq_sInf]
     refine Ideal.mem_sInf.mpr ?_
-    intro P hP
-    have hz : (g %ₘ f).map (Ideal.Quotient.mk P) = 0 := by
+    intro p hp
+    have hz : (g %ₘ f).map (Ideal.Quotient.mk p) = 0 := by
       rw [map_modByMonic _ hf, modByMonic_eq_zero_iff_dvd (hf.map _)]
-      exact H ⟨P, hP⟩
+      exact h ⟨p, hp⟩
     have hc := (congrArg (coeff · i) hz)
     simp only [coeff_map, coeff_zero] at hc
     grind [Ideal.Quotient.eq_zero_iff_mem]
@@ -68,10 +68,10 @@ lemma X_pow_sub_one_of_isUnit (r : ℕ) (hru : IsUnit (r : R)) :
   · exact IsRadical.X_pow_zero_sub_one_of_zero_eq_one (isUnit_zero_iff.mp (by simpa using hru))
   · intro k y hy
     apply (monic_X_pow_sub_one hr0).dvd_of_forall_prime_map_dvd
-    intro ⟨P, hP⟩
-    set D := R ⧸ P
+    intro ⟨p, hp⟩
+    set D := R ⧸ p
     set K := FractionRing D
-    set f := ((algebraMap D K).comp (Ideal.Quotient.mk P))
+    set f := ((algebraMap D K).comp (Ideal.Quotient.mk p))
     simp only [Polynomial.map_sub, Polynomial.map_pow, map_X, Polynomial.map_one]
     rw [← map_dvd_map _ (IsFractionRing.injective D K) (monic_X_pow_sub_one hr0)]
     simp only [Polynomial.map_sub, Polynomial.map_pow, map_X, Polynomial.map_one]
