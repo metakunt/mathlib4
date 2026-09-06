@@ -65,7 +65,7 @@ lemma _root_.Polynomial.Monic.dvd_of_forall_prime_map_dvd (hf : f.Monic) (h : �
 lemma X_pow_sub_one_of_isUnit (r : ℕ) (hru : IsUnit (r : R)) :
     _root_.IsRadical ((X : R[X]) ^ r - 1) := by
   rcases eq_or_ne r 0 with rfl | hr0
-  · exact IsRadical.X_pow_zero_sub_one_of_zero_eq_one (isUnit_zero_iff.mp (by simpa using hru))
+  · exact X_pow_zero_sub_one_of_zero_eq_one (isUnit_zero_iff.mp (by simpa using hru))
   · intro k y hy
     apply (monic_X_pow_sub_one hr0).dvd_of_forall_prime_map_dvd
     intro ⟨p, hp⟩
