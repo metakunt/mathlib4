@@ -103,9 +103,7 @@ end IsRadical
 
 namespace AdjoinRoot
 
-variable [CommRing R] {f : R[X]}
-
-variable [CharP R n]
+variable [CommRing R] {f : R[X]} [CharP R n]
 
 lemma IsReduced.X_pow_sub_one_of_coprime (h : n.Coprime r) [IsReduced R] :
     IsReduced (AdjoinRoot ((X : R[X]) ^ r - 1)) := by
